@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-export const useCountry = (type, Initialcountries) => {
+export const useCountry = (type) => {
   const [value, setValue] = useState("");
   const [countries, SetCountries] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
