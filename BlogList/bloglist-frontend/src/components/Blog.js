@@ -7,6 +7,7 @@ import {
   BrowserRouter as Router,
   Switch, Route, Link, useParams
 } from 'react-router-dom'
+import { Table, Form, Button, Alert, Navbar, Nav } from 'react-bootstrap'
 
 const BlogDetails = () => {
   const [comment, setComment] = useState('')
@@ -45,10 +46,10 @@ const BlogDetails = () => {
 
     <p>
       {' '}
-          Likes:{blogs.likes} <button id="LikeButton" className='LikeButton' onClick={() => vote(blogs)}>Likes</button>
+          Likes:{blogs.likes}   <Button variant="primary" id="LikeButton" className='LikeButton' onClick={() => vote(blogs)}>Likes</Button>
     </p>
     <p>
-      <button id="deleteButton" onClick={() => elimina(blogs)}>X Delete</button>
+      <Button variant="secondary" id="deleteButton" onClick={() => elimina(blogs)}>X Delete</Button>
     </p>
     <form onSubmit={(e) => { addComment(e, blogs)}}>
       <input
@@ -61,7 +62,7 @@ const BlogDetails = () => {
         }}/>
 
       <div>
-        <button type="submit">ADD COMMENT</button>
+        <Button variant="primary" type="submit">ADD COMMENT</Button>
       </div>
     </form>
     <h3> COMMENTS: </h3>
