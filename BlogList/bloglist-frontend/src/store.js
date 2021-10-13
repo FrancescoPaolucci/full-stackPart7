@@ -17,11 +17,12 @@ const Reducer = combineReducers({
 })
 
 const store = createStore(Reducer, composeWithDevTools(applyMiddleware(thunk)))
+/*
 const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
 if (loggedUserJSON) {
   const user = JSON.parse(loggedUserJSON)
   store.dispatch(loggedUser(user))
 }
 blogService.getAll().then((blogs) => store.dispatch(initializedBlogs(blogs)))
-
+*/
 export default store

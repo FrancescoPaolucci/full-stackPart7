@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
+import { Table, Form, Button } from 'react-bootstrap'
 import{ correctNotification } from '../reducers/notificationReducer'
 const BlogsForm = () => {
   const [newTitle, setTitle] = useState('')
@@ -28,53 +29,57 @@ const BlogsForm = () => {
     <div className="formDiv">
       <h2> Create a new Blog </h2>
       <form onSubmit={addBlog}>
-        <div>
-          Title:
-          <input
-            id='title'
+        <Form.Group>
+          <div>
+            <Form.Label>Title</Form.Label>
+            <Form.Control
+              id='title'
+              type="text"
+              value={newTitle}
+              onChange={({ target }) => {
+                setTitle(target.value)
+                console.log(target.value)
+              }}
+            />
+          </div>
+          <Form.Label>Author</Form.Label>
+          <Form.Control
+            id='author'
             type="text"
-            value={newTitle}
+            value={newAuthor}
             onChange={({ target }) => {
-              setTitle(target.value)
+              setAuthor(target.value)
               console.log(target.value)
             }}
           />
-        </div>
-        Author:{' '}
-        <input
-          id='author'
-          type="text"
-          value={newAuthor}
-          onChange={({ target }) => {
-            setAuthor(target.value)
-            console.log(target.value)
-          }}
-        />
-        <div>
-          Url:{' '}
-          <input
-            id='url'
+          <div>
+            <Form.Label>URL</Form.Label>
+            <Form.Control
+              id='url'
+              type="text"
+              value={newUrl}
+              onChange={({ target }) => {
+                setUrl(target.value)
+                console.log(target.value)
+              }}
+            />
+          </div>
+          <Form.Label>Likes</Form.Label>
+          <Form.Control
+            id='likes'
             type="text"
-            value={newUrl}
+            value={newLikes}
             onChange={({ target }) => {
-              setUrl(target.value)
+              setLikes(target.value)
               console.log(target.value)
             }}
           />
-        </div>
-        likes:{' '}
-        <input
-          id='likes'
-          type="text"
-          value={newLikes}
-          onChange={({ target }) => {
-            setLikes(target.value)
-            console.log(target.value)
-          }}
-        />
-        <div>
-          <button type="submit">save blog</button>
-        </div>
+          <div>
+            <Button variant="primary" type="submit">
+                   SAVE BLOG
+            </Button>
+          </div>
+        </Form.Group>
       </form>
     </div>
   )

@@ -10,6 +10,8 @@ const userReducer = (state=[], action) => {
     state = action.data
     return state
   case 'LOG_OUT':
+    window.localStorage.clear()
+    action.data=null
     return state = null
   default:
     return state
@@ -22,7 +24,7 @@ export const  loggedUser  = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      await blogService.setToken('dssdfsdfsf')
+      await blogService.setToken(user.token)
       dispatch({
         type: 'LOGGED_IN',
         data: user
@@ -33,8 +35,10 @@ export const  loggedUser  = () => {
 
 export const logOut = () => {
   return async (dispatch) => {
+    await window.localStorage.clear()
     dispatch({
-      type:'LOG_OUT'
+      type:'LOG_OUT',
+
     })
   }
 }
