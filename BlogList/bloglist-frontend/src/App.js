@@ -11,7 +11,7 @@ import { handleLogindisp, logOut } from './reducers/userReducer'
 import { loggedUser } from './reducers/userReducer'
 import {
   BrowserRouter as Router,
-  Switch, Route, Link, useParams
+  Switch, Route, Link, useParams, Redirect
 } from 'react-router-dom'
 import userService from './services/users'
 
@@ -142,7 +142,10 @@ const App = () => {
         <Link style={padding} to="/home">home</Link>
         <Link style={padding} to="/blogs">blogs</Link>
         <Link style={padding} to="/users">users</Link>
-        {user.name} logged in{' '}
+        {user
+          ? <em>{user.name} logged in</em>
+          : <Link style={padding} to="/login">login</Link>
+        }
         <button
           onClick={() => {
             window.localStorage.clear()
@@ -158,19 +161,22 @@ const App = () => {
         <Notification />
         <Switch>
           <Route path="/home">
-            {user === null ? (
-              <div>{loginForm()}</div>
-            ) : (
+            {user?(
               <div>
                 <div>{blogsForm()}</div>
                 <div>
                   <BlogTitles />
                 </div>
               </div>
-            )}
+            ):(<Redirect to="/login" />)
+            }
+          </Route>
+
+          <Route path = "/login">
+            <div>{loginForm()}</div>
           </Route>
           <Route path="/users">
-            <Userlist users={users} />
+            {user ? <Userlist users={users} /> : <Redirect to="/login" />}
           </Route>
           <Route path="/user/:id">
             <User users={users}/>
