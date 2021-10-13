@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import BlogDetails from './components/Blog'
-import blogService from './services/blogs'
-import loginService from './services/login'
+import BlogTitles from './components/BlogTitles'
 import Togglable from './components/Togglable.js'
 import BlogsForm from './components/BlogsForm'
 import './index.css'
@@ -10,6 +9,13 @@ import { useDispatch, useSelector } from 'react-redux'
 import { initializedBlogs } from './reducers/blogReducer'
 import { handleLogindisp, logOut } from './reducers/userReducer'
 import { loggedUser } from './reducers/userReducer'
+import {
+  BrowserRouter as Router,
+  Switch, Route, Link, useParams
+} from 'react-router-dom'
+import userService from './services/users'
+
+
 const Error = ({ message }) => {
   if (message === null) {
     return null
@@ -17,10 +23,43 @@ const Error = ({ message }) => {
   return <div className="error">{message}</div>
 }
 
+const Userlist = ({ users }) => {
+  return(
+    <div>
+      <p>USERS: NUMBER OF BLOGS</p>
+      {users.map((a) => (
+        <li key={a.id}>
+          <p>    <Link to={`/user/${a.id}`}>{a.name}</Link> {a.blogs.length} </p>
+        </li>
+
+      ))}
+    </div>
+  )}
+
+const User = ({ users }) => {
+  const id = useParams().id
+  const user = users.find(u => u.id === id)
+  if (!user) {
+    return null
+  }
+  return(
+    <div>
+      <h1> {user.name} </h1>
+      <h3>Added blogs:</h3>
+      <div> {user.blogs.map((a) => (
+        <li key = {a.id}>
+          <h4>{a.title}<p>Likes:{a.likes}</p></h4>
+        </li>
+      ))} </div>
+    </div>
+  )
+}
+
 const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [users, setUsers] = useState([])
   const blogsFormRef = useRef()
   const dispatch = useDispatch()
   const blogs1 = useSelector((state) => state.blog)
@@ -34,11 +73,18 @@ const App = () => {
     dispatch(loggedUser())
   }, [dispatch])
 
+  useEffect(() => {
+    userService.getAll().then(users =>
+      setUsers(users)
+    )
+  }, [])
+
+  let allora = users.map((a) => a.blogs.length)
+  console.log(allora)
 
 
-  console.log('#####11', blogs1.map((a) => {return a.title}))
-
-
+  //const users1 = blogs1.map((a) => a.user)
+  //console.log(users1[2])
 
   const handleLogin = async (event) => {
 
@@ -87,34 +133,58 @@ const App = () => {
       <BlogsForm />
     </Togglable>
   )
-
+  const padding = {
+    padding: 5
+  }
   return (
-    <div>
-      <h2>blogs</h2>
-      <Error message={errorMessage} />
-      <Notification />
-      {user === null ? (
-        <div>{loginForm()}</div>
-      ) : (
-        <div>
-          <p>
-            {user.name} logged in{' '}
-            <button
-              onClick={() => {
-                window.localStorage.clear()
-                dispatch(logOut())
-              }}
-            >
+    <Router>
+      <div>
+        <Link style={padding} to="/home">home</Link>
+        <Link style={padding} to="/blogs">blogs</Link>
+        <Link style={padding} to="/users">users</Link>
+        {user.name} logged in{' '}
+        <button
+          onClick={() => {
+            window.localStorage.clear()
+            dispatch(logOut())
+          }}
+        >
               Log out
-            </button>
-          </p>
-          <div>{blogsForm()}</div>
-          <div>
+        </button>
+      </div>
+      <div>
+        <h2>blogs</h2>
+        <Error message={errorMessage} />
+        <Notification />
+        <Switch>
+          <Route path="/home">
+            {user === null ? (
+              <div>{loginForm()}</div>
+            ) : (
+              <div>
+                <div>{blogsForm()}</div>
+                <div>
+                  <BlogTitles />
+                </div>
+              </div>
+            )}
+          </Route>
+          <Route path="/users">
+            <Userlist users={users} />
+          </Route>
+          <Route path="/user/:id">
+            <User users={users}/>
+          </Route>
+          <Route path="/blogs">
+            <BlogTitles />
+          </Route>
+          <Route path="/blog/:id">
             <BlogDetails/>
-          </div>
-        </div>
-      )}
-    </div>
+          </Route>
+        </Switch>
+      </div>
+
+    </Router>
   )
 }
 

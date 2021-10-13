@@ -6,6 +6,12 @@ const reducer = (state=[], action) => {
     return action.data
   case'ADD_BLOG':
     return[...state, action.data]
+  case'ADD_COMMENT':{
+    const id = action.data.id
+    const UpdateTeto = state.find((n) => n.id === id)
+    const UpdateTed = { ... UpdateTeto, comments: action.data.comments }
+    return state.map((voted) => (voted.id !== id ? voted : UpdateTed))
+  }
   case 'ADD_LIKE':{
     const id = action.data.id
     const addVoteTo = state.find((n) => n.id === id)
@@ -41,6 +47,18 @@ export const addVote = (object) => {
     dispatch({
       type: 'ADD_LIKE',
       data: newObj,
+    })
+  }
+}
+
+export const AddComment = (object, comment) => {
+  return async (dispatch) => {
+    const id = object.id
+
+    const newObj = await blogService.AddComment(id,object,comment)
+    dispatch({
+      type: 'ADD_COMMENT',
+      data:  newObj
     })
   }
 }
